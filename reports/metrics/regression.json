@@ -1,0 +1,279 @@
+{
+  "train_rows": 56265,
+  "test_rows": 57705,
+  "best_model": "Gradient boosting",
+  "models": [
+    {
+      "model": "Baseline (training mean)",
+      "MAE": 0.47430948497236947,
+      "RMSE": 0.6451806583335479,
+      "R2": -0.00030290436280222544,
+      "fit_seconds": 0.0
+    },
+    {
+      "model": "OLS",
+      "MAE": 0.37369793851218663,
+      "RMSE": 0.5095300361768098,
+      "R2": 0.37610941539174847,
+      "fit_seconds": 2.3
+    },
+    {
+      "model": "OLS without lender",
+      "MAE": 0.41024989601653605,
+      "RMSE": 0.5708872374249471,
+      "R2": 0.21680569752548517,
+      "fit_seconds": 1.9
+    },
+    {
+      "model": "Ridge",
+      "MAE": 0.3736930835826853,
+      "RMSE": 0.5095513268073834,
+      "R2": 0.3760572759670764,
+      "fit_seconds": 1.8
+    },
+    {
+      "model": "Lasso",
+      "MAE": 0.3737675036851378,
+      "RMSE": 0.5098763467040474,
+      "R2": 0.37526105205186455,
+      "fit_seconds": 2.0
+    },
+    {
+      "model": "Median (quantile) regression",
+      "MAE": 0.37367328001297045,
+      "RMSE": 0.512957174826203,
+      "R2": 0.36768851732159413,
+      "fit_seconds": 54.7
+    },
+    {
+      "model": "Gradient boosting",
+      "MAE": 0.3470594712542979,
+      "RMSE": 0.47202174219789184,
+      "R2": 0.4645821348151934,
+      "fit_seconds": 6.7
+    }
+  ],
+  "effects": [
+    {
+      "change": "+10 points loan-to-value",
+      "effect": 0.09843383461126239,
+      "ci": 0.003367911029486239
+    },
+    {
+      "change": "+10 points debt-to-income",
+      "effect": 0.10395411216363572,
+      "ci": 0.006463959758277296
+    },
+    {
+      "change": "Income doubles",
+      "effect": 0.23271295131627176,
+      "ci": 0.01298634922661011
+    },
+    {
+      "change": "Loan amount doubles",
+      "effect": -0.27805779585739837,
+      "ci": 0.013641695602510986
+    },
+    {
+      "change": "+10 points tract minority share",
+      "effect": 0.0012321436253454555,
+      "ci": 0.0027057202497784115
+    },
+    {
+      "change": "+25 points tract income (% of area median)",
+      "effect": -0.004585673550145513,
+      "ci": 0.0036844527060294757
+    },
+    {
+      "change": "FHA (vs conventional)",
+      "effect": 0.1553960631825766,
+      "ci": 0.018698664252570524
+    },
+    {
+      "change": "VA (vs conventional)",
+      "effect": -0.5307276187359119,
+      "ci": 0.023895893958117944
+    },
+    {
+      "change": "Investment property (vs own home)",
+      "effect": 0.4334112721559632,
+      "ci": 0.05119770421445206
+    },
+    {
+      "change": "Second home (vs own home)",
+      "effect": 0.21440130798350637,
+      "ci": 0.03782063664334617
+    },
+    {
+      "change": "Jumbo (vs conforming)",
+      "effect": -0.1628568288144222,
+      "ci": 0.04286309558848271
+    },
+    {
+      "change": "No automated underwriting (vs DU)",
+      "effect": 0.2702531839094429,
+      "ci": 0.03629594039199188
+    },
+    {
+      "change": "Freddie Mac LPA (vs DU)",
+      "effect": 0.02107513314872695,
+      "ci": 0.009687770739554376
+    }
+  ],
+  "importance": [
+    {
+      "feature": "Lender",
+      "importance": 0.39517379031970473,
+      "std": 0.011090929466386684
+    },
+    {
+      "feature": "Loan-to-value",
+      "importance": 0.20585097862645113,
+      "std": 0.0035146815042156276
+    },
+    {
+      "feature": "Income",
+      "importance": 0.19207731819611487,
+      "std": 0.0035353307938440367
+    },
+    {
+      "feature": "Loan amount",
+      "importance": 0.1528774217847692,
+      "std": 0.0019879044625122294
+    },
+    {
+      "feature": "Underwriting system",
+      "importance": 0.10056680309598912,
+      "std": 0.0032049529766549566
+    },
+    {
+      "feature": "Loan type",
+      "importance": 0.0702190167999978,
+      "std": 0.001199990920105706
+    },
+    {
+      "feature": "Debt-to-income",
+      "importance": 0.04678996890718643,
+      "std": 0.0011300370245631687
+    },
+    {
+      "feature": "Occupancy",
+      "importance": 0.046619318903852,
+      "std": 0.001478509329584563
+    },
+    {
+      "feature": "Tract income level",
+      "importance": 0.004061793726621921,
+      "std": 0.0005839825626352664
+    },
+    {
+      "feature": "County",
+      "importance": 0.0022516476433516175,
+      "std": 0.0005374957573089178
+    },
+    {
+      "feature": "Tract minority share",
+      "importance": 0.0013204307824352223,
+      "std": 0.0008137908950808932
+    },
+    {
+      "feature": "Number of units",
+      "importance": 0.001120458744424968,
+      "std": 9.403521795065038e-05
+    },
+    {
+      "feature": "Business purpose",
+      "importance": 1.769819992571975e-05,
+      "std": 2.7735661884068622e-05
+    },
+    {
+      "feature": "Manufactured home",
+      "importance": 0.0,
+      "std": 0.0
+    },
+    {
+      "feature": "Credit score model",
+      "importance": -3.458373416176386e-05,
+      "std": 0.00022749851199778268
+    },
+    {
+      "feature": "Jumbo vs conforming",
+      "importance": -0.0007234693439623241,
+      "std": 0.0002615970998337248
+    }
+  ],
+  "group_gaps": [
+    {
+      "race_ethnicity": "White",
+      "loans": 28317,
+      "actual": 0.25304689338559877,
+      "predicted": 0.24705283560564043,
+      "residual": 0.005994057779958329,
+      "residual_se": 0.002738928336896827,
+      "raw_gap_vs_white_bps": 0.0,
+      "unexplained_gap_vs_white_bps": 0.0
+    },
+    {
+      "race_ethnicity": "Hispanic or Latino",
+      "loans": 8599,
+      "actual": 0.5473532247935806,
+      "predicted": 0.49928487987915937,
+      "residual": 0.048068344914421295,
+      "residual_se": 0.0057374934282741616,
+      "raw_gap_vs_white_bps": 29.430633140798186,
+      "unexplained_gap_vs_white_bps": 4.207428713446296
+    },
+    {
+      "race_ethnicity": "Asian",
+      "loans": 7679,
+      "actual": 0.14558360593827321,
+      "predicted": 0.14926231681554106,
+      "residual": -0.00367871087726784,
+      "residual_se": 0.005019953629848203,
+      "raw_gap_vs_white_bps": -10.746328744732555,
+      "unexplained_gap_vs_white_bps": -0.967276865722617
+    },
+    {
+      "race_ethnicity": "Not available",
+      "loans": 7279,
+      "actual": 0.3036526322297019,
+      "predicted": 0.3131778752447551,
+      "residual": -0.009525243015053196,
+      "residual_se": 0.0055286025191978025,
+      "raw_gap_vs_white_bps": 5.060573884410314,
+      "unexplained_gap_vs_white_bps": -1.5519300795011526
+    },
+    {
+      "race_ethnicity": "Black",
+      "loans": 4217,
+      "actual": 0.4580548778752668,
+      "predicted": 0.42975707756089215,
+      "residual": 0.02829780031437461,
+      "residual_se": 0.00738719326258922,
+      "raw_gap_vs_white_bps": 20.5007984489668,
+      "unexplained_gap_vs_white_bps": 2.2303742534416284
+    },
+    {
+      "race_ethnicity": "Joint",
+      "loans": 1400,
+      "actual": 0.22527964285714286,
+      "predicted": 0.22148323913456133,
+      "residual": 0.0037964037225815405,
+      "residual_se": 0.01158740466886523,
+      "raw_gap_vs_white_bps": -2.776725052845591,
+      "unexplained_gap_vs_white_bps": -0.2197654057376789
+    },
+    {
+      "race_ethnicity": "Other or multiple",
+      "loans": 214,
+      "actual": 0.3551434579439252,
+      "predicted": 0.2947776067247746,
+      "residual": 0.06036585121915061,
+      "residual_se": 0.031071881432092635,
+      "raw_gap_vs_white_bps": 10.209656455832643,
+      "unexplained_gap_vs_white_bps": 5.437179343919228
+    }
+  ],
+  "ols_r2_with_lender": 0.37610941539174847,
+  "ols_r2_without_lender": 0.21680569752548517
+}

@@ -1,0 +1,33 @@
+task,feature,importance,std
+Regression (rate spread),Lender,0.39517379031970473,0.011090929466386684
+Regression (rate spread),Loan-to-value,0.20585097862645113,0.0035146815042156276
+Regression (rate spread),Income,0.19207731819611487,0.0035353307938440367
+Regression (rate spread),Loan amount,0.1528774217847692,0.0019879044625122294
+Regression (rate spread),Underwriting system,0.10056680309598912,0.0032049529766549566
+Regression (rate spread),Loan type,0.0702190167999978,0.001199990920105706
+Regression (rate spread),Debt-to-income,0.04678996890718643,0.0011300370245631687
+Regression (rate spread),Occupancy,0.046619318903852,0.001478509329584563
+Regression (rate spread),Tract income level,0.004061793726621921,0.0005839825626352664
+Regression (rate spread),County,0.0022516476433516175,0.0005374957573089178
+Regression (rate spread),Tract minority share,0.0013204307824352223,0.0008137908950808932
+Regression (rate spread),Number of units,0.001120458744424968,9.403521795065038e-05
+Regression (rate spread),Business purpose,1.769819992571975e-05,2.7735661884068622e-05
+Regression (rate spread),Manufactured home,0.0,0.0
+Regression (rate spread),Credit score model,-3.458373416176386e-05,0.00022749851199778268
+Regression (rate spread),Jumbo vs conforming,-0.0007234693439623241,0.0002615970998337248
+Classification (denial),Debt-to-income,0.4030502258119319,0.003119914001201156
+Classification (denial),Lender,0.11799870559673882,0.004880573152084181
+Classification (denial),Loan type,0.06963615337475312,0.0015972504304545584
+Classification (denial),Loan-to-value,0.06621516367006934,0.0038233888147656218
+Classification (denial),Underwriting system,0.03073870951188016,0.0012950244022613324
+Classification (denial),Loan amount,0.01262312641976877,0.0011867556803214613
+Classification (denial),Occupancy,0.009063172877513636,0.0011773481597330201
+Classification (denial),Income,0.0075245117603575775,0.0014702092545255771
+Classification (denial),Tract minority share,0.007267189251645734,0.001601481829253194
+Classification (denial),County,0.005057799690276576,0.001486559722956813
+Classification (denial),Credit score model,0.0037455271703638717,0.0006400783082554714
+Classification (denial),Number of units,0.003488730447416999,0.0011018504970631388
+Classification (denial),Tract income level,0.0023476927141947044,0.0006344878898879825
+Classification (denial),Manufactured home,0.00040881209423961897,0.00014706812246110444
+Classification (denial),Business purpose,0.00024053932146712588,0.00016668918470349957
+Classification (denial),Jumbo vs conforming,8.533603444174087e-05,8.721507200982673e-05

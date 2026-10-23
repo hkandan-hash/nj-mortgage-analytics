@@ -1,0 +1,412 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NJ Mortgage Lending Dashboard</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink2: #52514e; --muted: #898781;
+    --grid: #e1e0d9; --axis: #c3c2b7; --border: rgba(11,11,11,.10); --hover: rgba(42,120,214,.08);
+    --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --red: #e34948;
+    --seq1: #cde2fb; --seq2: #9ec5f4; --seq3: #6da7ec; --seq4: #3987e5; --seq5: #256abf; --seq6: #184f95; --seq7: #0d366b;
+    --good: #006300; --bad: #d03b3b; --neutral: #f0efec;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --muted: #898781;
+      --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,.10); --hover: rgba(57,135,229,.15);
+      --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --red: #e66767;
+      --seq1: #104281; --seq2: #184f95; --seq3: #1c5cab; --seq4: #256abf; --seq5: #3987e5; --seq6: #6da7ec; --seq7: #b7d3f6;
+      --good: #0ca30c; --bad: #e66767; --neutral: #383835;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--ink); font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 24px 16px 48px; }
+  header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px; }
+  h1 { margin: 0; font-size: 22px; }
+  h2 { margin: 32px 0 4px; font-size: 18px; }
+  h3 { margin: 0 0 2px; font-size: 14.5px; }
+  .sub { color: var(--ink2); margin: 4px 0 0; max-width: 760px; }
+  .note { color: var(--ink2); font-size: 13px; margin: 0 0 12px; }
+  .controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--surface); }
+  .seg button { font: inherit; border: 0; background: none; color: var(--ink2); padding: 6px 12px; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--s1); color: #fff; }
+  select { font: inherit; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--ink); }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-top: 18px; }
+  .tile, .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; min-width: 0; }
+  .tile .label { color: var(--ink2); font-size: 12px; }
+  .tile .value { font-size: 26px; font-weight: 600; margin: 2px 0; }
+  .tile .delta { font-size: 12px; color: var(--muted); }
+  .grid2 { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 500px), 1fr)); margin-top: 16px; }
+  .wide { grid-column: 1 / -1; }
+  .chart { position: relative; height: 300px; }
+  .chart.tall { height: 360px; }
+  .map-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 200px; gap: 12px; align-items: start; }
+  @media (max-width: 640px) { .map-wrap { grid-template-columns: 1fr; } }
+  svg.map { width: 100%; height: auto; max-height: 520px; display: block; }
+  svg.map path { stroke: var(--surface); stroke-width: 1.2; cursor: pointer; }
+  svg.map path:hover, svg.map path:focus { stroke: var(--ink); stroke-width: 2; outline: none; }
+  .legend-bar { display: flex; height: 10px; border-radius: 3px; overflow: hidden; margin: 6px 0 2px; }
+  .legend-bar span { flex: 1; }
+  .legend-labels { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--ink2); }
+  .rank { font-size: 12.5px; margin-top: 12px; }
+  .rank div { display: flex; justify-content: space-between; padding: 2px 0; border-bottom: 1px solid var(--grid); }
+  .tooltip { position: fixed; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--axis);
+             border-radius: 8px; padding: 8px 10px; font-size: 12.5px; box-shadow: 0 4px 14px rgba(0,0,0,.12); z-index: 10; }
+  .heat { display: grid; gap: 2px; font-size: 12px; overflow-x: auto; }
+  .heat .cell { padding: 8px 4px; text-align: center; border-radius: 3px; font-variant-numeric: tabular-nums; }
+  .heat .hdr { color: var(--ink2); text-align: center; padding: 4px; }
+  .heat .rowhdr { color: var(--ink2); padding: 8px 6px 8px 0; text-align: right; white-space: nowrap; }
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+  th, td { padding: 6px 8px; border-bottom: 1px solid var(--grid); text-align: right; white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; }
+  th { color: var(--ink2); font-weight: 600; }
+  tr.best td { font-weight: 600; }
+  .callout { border-left: 3px solid var(--s1); padding: 6px 12px; margin: 10px 0 0; color: var(--ink2); font-size: 13px; background: var(--hover); border-radius: 0 6px 6px 0; }
+  footer { margin-top: 32px; color: var(--muted); font-size: 12px; }
+  a { color: var(--s1); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>New Jersey Mortgage Lending</h1>
+      <p class="sub">Home-purchase applications that reached a decision, from public HMDA data. Explore where and why applications are denied, what drives pricing, and how well models predict both.</p>
+    </div>
+    <div class="controls">
+      <span class="note" style="margin:0">Year</span>
+      <div class="seg" id="yearSeg" role="group" aria-label="Year"></div>
+    </div>
+  </header>
+
+  <section class="tiles" id="tiles" aria-label="Key figures"></section>
+
+  <h2>Where applications are denied</h2>
+  <p class="note">Raw county figures, not adjusted for differences in applicants. Hover a county for details.</p>
+  <div class="grid2">
+    <div class="card wide">
+      <div class="controls" style="justify-content: space-between">
+        <h3 id="mapTitle">Denial rate by county</h3>
+        <label class="note" style="margin:0">Show
+          <select id="metricSelect">
+            <option value="denial_rate">Denial rate</option>
+            <option value="avg_rate_spread">Avg rate spread</option>
+            <option value="median_income_k">Median income</option>
+            <option value="applications">Applications</option>
+          </select>
+        </label>
+      </div>
+      <div class="map-wrap">
+        <svg class="map" id="map" role="img" aria-label="Map of New Jersey counties"></svg>
+        <div>
+          <div class="legend-bar" id="legendBar"></div>
+          <div class="legend-labels"><span id="legendMin"></span><span id="legendMax"></span></div>
+          <div class="rank" id="rank"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Denial rate by debt-to-income and loan-to-value</h3>
+      <p class="note">Each cell shows the share denied; blank cells have fewer than 50 applications.</p>
+      <div class="heat" id="heat"></div>
+    </div>
+    <div class="card">
+      <h3>Primary reason given for denial</h3>
+      <p class="note">Share of denied applications.</p>
+      <div class="chart"><canvas id="reasonsChart"></canvas></div>
+    </div>
+  </div>
+
+  <h2>Regression: what drives the price over market?</h2>
+  <p class="note" id="regNote"></p>
+  <div class="grid2">
+    <div class="card">
+      <h3>Model comparison (out-of-time R²)</h3>
+      <div class="chart"><canvas id="regModels"></canvas></div>
+      <div class="callout" id="lenderCallout"></div>
+    </div>
+    <div class="card">
+      <h3>Effect on rate spread, holding other factors equal (OLS)</h3>
+      <p class="note">Percentage points. Red raises the price over market, blue lowers it. Hover for the 95% interval.</p>
+      <div class="chart tall"><canvas id="regEffects"></canvas></div>
+    </div>
+  </div>
+
+  <h2>Classification: predicting denials</h2>
+  <p class="note" id="clsNote"></p>
+  <div class="grid2">
+    <div class="card">
+      <h3>ROC curves</h3>
+      <div class="chart"><canvas id="rocChart"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>What drives the predictions</h3>
+      <p class="note">Permutation importance: how much average precision drops when a feature is shuffled.</p>
+      <div class="chart"><canvas id="clsImportance"></canvas></div>
+    </div>
+    <div class="card wide">
+      <h3>All models, scored on the following year</h3>
+      <div class="tablewrap"><table id="clsTable"></table></div>
+    </div>
+  </div>
+
+  <h2>Fairness audit</h2>
+  <p class="note">Race and ethnicity are never model inputs. These views check outcomes by group anyway, because other inputs can correlate with them. HMDA has no credit scores, so gaps cannot be attributed to treatment versus unmeasured credit differences.</p>
+  <div class="grid2">
+    <div class="card">
+      <h3>Denials: actual rate vs average predicted risk</h3>
+      <div class="chart"><canvas id="fairChart"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Pricing: unexplained spread by group (bps)</h3>
+      <p class="note">Actual minus predicted spread. Orange: different from zero at the 95% level. Blue: not significant.</p>
+      <div class="chart"><canvas id="gapChart"></canvas></div>
+    </div>
+    <div class="card wide">
+      <h3>Error rates of the denial flag by group</h3>
+      <div class="tablewrap"><table id="fairTable"></table></div>
+    </div>
+  </div>
+
+  <footer>
+    Data: HMDA (FFIEC / CFPB), New Jersey, home purchase, actions originated, approved-not-accepted and denied. Models trained on <span id="ftTrain"></span>, evaluated on <span id="ftTest"></span>.
+    Full methods and caveats: <a href="https://github.com/hkandan-hash/nj-mortgage-analytics">github.com/hkandan-hash/nj-mortgage-analytics</a>.
+  </footer>
+</div>
+<div class="tooltip" id="tooltip" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="data.js"></script>
+<script>
+(function () {
+  const D = window.DASHBOARD_DATA;
+  const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const SEQ = () => ["--seq1", "--seq2", "--seq3", "--seq4", "--seq5", "--seq6", "--seq7"].map(css);
+  const luminance = (hex) => {
+    const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
+      .map((c) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)));
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+  const pct = (v, d = 1) => v == null ? "–" : (100 * v).toFixed(d) + "%";
+  const money = (v) => "$" + Math.round(v).toLocaleString();
+  const METRICS = {
+    denial_rate: { label: "Denial rate", fmt: (v) => pct(v) },
+    avg_rate_spread: { label: "Avg rate spread", fmt: (v) => v == null ? "–" : v.toFixed(2) + " pts" },
+    median_income_k: { label: "Median income", fmt: (v) => v == null ? "–" : "$" + Math.round(v) + "k" },
+    applications: { label: "Applications", fmt: (v) => v == null ? "–" : v.toLocaleString() },
+  };
+  let year = D.testYear, metric = "denial_rate";
+  const charts = {};
+  const tip = document.getElementById("tooltip");
+  function showTip(html, x, y) { tip.innerHTML = html; tip.hidden = false; tip.style.left = Math.min(x + 14, innerWidth - 240) + "px"; tip.style.top = (y + 14) + "px"; }
+  function hideTip() { tip.hidden = true; }
+
+  // ------------------------------------------------------------ year control + KPIs
+  const seg = document.getElementById("yearSeg");
+  D.years.forEach((y) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.textContent = y; b.setAttribute("aria-pressed", String(y === year));
+    b.onclick = () => { year = y; seg.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(+x.textContent === y))); renderYear(); };
+    seg.appendChild(b);
+  });
+
+  function renderTiles() {
+    const k = D.kpis.find((r) => r.year === year), other = D.kpis.find((r) => r.year !== year);
+    const delta = (a, b, f) => (year > other.year ? "vs " + other.year + ": " : "vs " + other.year + ": ") + f(a - b);
+    const tiles = [
+      ["Applications", k.applications.toLocaleString(), delta(k.applications, other.applications, (d) => (d >= 0 ? "+" : "") + d.toLocaleString())],
+      ["Denial rate", pct(k.denial_rate), delta(k.denial_rate, other.denial_rate, (d) => (d >= 0 ? "+" : "") + (100 * d).toFixed(1) + " pts")],
+      ["Median loan", money(k.median_loan), delta(k.median_loan, other.median_loan, (d) => (d >= 0 ? "+" : "-") + money(Math.abs(d)))],
+      ["Median income", "$" + Math.round(k.median_income_k) + "k", delta(k.median_income_k, other.median_income_k, (d) => (d >= 0 ? "+$" : "-$") + Math.abs(Math.round(d)) + "k")],
+      ["Median interest rate", k.median_rate.toFixed(3) + "%", delta(k.median_rate, other.median_rate, (d) => (d >= 0 ? "+" : "") + d.toFixed(3) + " pts")],
+    ];
+    document.getElementById("tiles").innerHTML = tiles.map((t) =>
+      `<div class="tile"><div class="label">${t[0]}</div><div class="value">${t[1]}</div><div class="delta">${t[2]}</div></div>`).join("");
+  }
+
+  // ------------------------------------------------------------ map
+  const svg = document.getElementById("map");
+  const feats = D.geo.features;
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  const lat0 = 40.1 * Math.PI / 180;
+  const proj = ([lon, lat]) => [lon * Math.cos(lat0), -lat];
+  const rings = (g) => g.type === "Polygon" ? [g.coordinates] : g.coordinates;
+  feats.forEach((f) => rings(f.geometry).forEach((poly) => poly.forEach((ring) => ring.forEach((pt) => {
+    const [x, y] = proj(pt); minX = Math.min(minX, x); maxX = Math.max(maxX, x); minY = Math.min(minY, y); maxY = Math.max(maxY, y);
+  }))));
+  const W = 400, H = W * (maxY - minY) / (maxX - minX);
+  svg.setAttribute("viewBox", `0 0 ${W} ${H.toFixed(1)}`);
+  const sx = (x) => ((x - minX) / (maxX - minX) * W).toFixed(1), sy = (y) => ((y - minY) / (maxY - minY) * H).toFixed(1);
+  feats.forEach((f) => {
+    const d = rings(f.geometry).map((poly) => poly.map((ring) => "M" + ring.map((pt) => { const [x, y] = proj(pt); return sx(x) + "," + sy(y); }).join("L") + "Z").join("")).join("");
+    const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    p.setAttribute("d", d); p.setAttribute("tabindex", "0"); p.dataset.fips = f.id; p.dataset.name = f.properties.name;
+    const move = (e) => {
+      const r = D.counties.find((c) => c.year === year && c.county_fips == f.id);
+      if (!r) return;
+      showTip(`<strong>${f.properties.name} County</strong><br>Applications: ${r.applications.toLocaleString()}<br>Denial rate: ${pct(r.denial_rate)}`
+        + `<br>Median income: $${Math.round(r.median_income_k)}k<br>Avg rate spread: ${r.avg_rate_spread == null ? "–" : r.avg_rate_spread.toFixed(2)} pts`
+        + (r.avg_predicted_denial != null ? `<br>Model's avg predicted denial: ${pct(r.avg_predicted_denial)}` : ""), e.clientX, e.clientY);
+    };
+    p.addEventListener("mousemove", move); p.addEventListener("mouseleave", hideTip);
+    p.addEventListener("focus", () => { const b = p.getBoundingClientRect(); move({ clientX: b.right, clientY: b.top }); });
+    p.addEventListener("blur", hideTip);
+    svg.appendChild(p);
+  });
+
+  function renderMap() {
+    const rows = D.counties.filter((c) => c.year === year && c[metric] != null);
+    const vals = rows.map((r) => r[metric]);
+    const lo = Math.min(...vals), hi = Math.max(...vals), seq = SEQ();
+    const colorOf = (v) => seq[Math.min(seq.length - 1, Math.floor((v - lo) / ((hi - lo) || 1) * seq.length))];
+    svg.querySelectorAll("path").forEach((p) => {
+      const r = rows.find((c) => c.county_fips == p.dataset.fips);
+      p.setAttribute("fill", r ? colorOf(r[metric]) : css("--neutral"));
+      p.setAttribute("aria-label", `${p.dataset.name}: ${r ? METRICS[metric].fmt(r[metric]) : "no data"}`);
+    });
+    document.getElementById("mapTitle").textContent = `${METRICS[metric].label} by county, ${year}`;
+    document.getElementById("legendBar").innerHTML = seq.map((c) => `<span style="background:${c}"></span>`).join("");
+    document.getElementById("legendMin").textContent = METRICS[metric].fmt(lo);
+    document.getElementById("legendMax").textContent = METRICS[metric].fmt(hi);
+    const sorted = [...rows].sort((a, b) => b[metric] - a[metric]);
+    const show = [...sorted.slice(0, 5), null, ...sorted.slice(-3)];
+    document.getElementById("rank").innerHTML = `<div style="border:0"><strong>Highest</strong></div>` + show.map((r) =>
+      r ? `<div><span>${r.county}</span><span>${METRICS[metric].fmt(r[metric])}</span></div>` : `<div style="border:0;margin-top:6px"><strong>Lowest</strong></div>`).join("");
+  }
+  document.getElementById("metricSelect").onchange = (e) => { metric = e.target.value; renderMap(); };
+
+  // ------------------------------------------------------------ heatmap
+  function renderHeat() {
+    const cells = D.grid.filter((g) => g.year === year);
+    const max = Math.max(...cells.filter((c) => c.applications >= 50).map((c) => c.denial_rate)), seq = SEQ();
+    const heat = document.getElementById("heat");
+    heat.style.gridTemplateColumns = `auto repeat(${D.ltvOrder.length}, minmax(48px, 1fr))`;
+    let html = `<div class="hdr">DTI \\ LTV</div>` + D.ltvOrder.map((l) => `<div class="hdr">${l}</div>`).join("");
+    D.dtiOrder.forEach((d) => {
+      html += `<div class="rowhdr">${d}</div>`;
+      D.ltvOrder.forEach((l) => {
+        const c = cells.find((x) => x.dti_band === d && x.ltv_band === l);
+        if (!c || c.applications < 50) { html += `<div class="cell" style="background:var(--neutral);color:var(--muted)">·</div>`; return; }
+        const i = Math.min(seq.length - 1, Math.floor(Math.sqrt(c.denial_rate / max) * seq.length));
+        const textColor = luminance(seq[i]) < 0.35 ? "#ffffff" : "#0b0b0b";  // readable on either theme's ramp
+        html += `<div class="cell" style="background:${seq[i]};color:${textColor}" title="${c.applications.toLocaleString()} applications">${pct(c.denial_rate, 0)}</div>`;
+      });
+    });
+    heat.innerHTML = html;
+  }
+
+  // ------------------------------------------------------------ chart helpers
+  function base(extra = {}) {
+    const muted = css("--muted"), grid = css("--grid");
+    return Object.assign({
+      responsive: true, maintainAspectRatio: false, animation: false,
+      plugins: {
+        legend: { labels: { color: css("--ink2"), usePointStyle: true, boxWidth: 8, boxHeight: 8 } },
+        tooltip: { backgroundColor: css("--surface"), titleColor: css("--ink"), bodyColor: css("--ink2"), borderColor: css("--axis"), borderWidth: 1, padding: 10 },
+      },
+      scales: {
+        x: { ticks: { color: muted }, grid: { color: grid }, border: { display: false } },
+        y: { ticks: { color: muted }, grid: { color: grid }, border: { display: false } },
+      },
+    }, extra);
+  }
+  function make(id, cfg) { if (charts[id]) charts[id].destroy(); charts[id] = new Chart(document.getElementById(id), cfg); }
+  function hbar(id, labels, values, colors, fmt, opts = {}) {
+    const o = base({ indexAxis: "y" });
+    o.plugins.legend.display = false;
+    o.scales.y.grid.display = false;
+    o.scales.x.ticks.callback = (v) => fmt(v);
+    o.plugins.tooltip.callbacks = { label: (ctx) => " " + fmt(ctx.parsed.x) + (opts.extra ? opts.extra(ctx.dataIndex) : "") };
+    make(id, { type: "bar", data: { labels, datasets: [{ data: values, backgroundColor: colors, borderRadius: 4, barThickness: 16 }] }, options: o });
+  }
+
+  function renderReasons() {
+    const r = D.reasons.filter((x) => x.year === year).sort((a, b) => b.share - a.share);
+    hbar("reasonsChart", r.map((x) => x.denial_reason), r.map((x) => x.share), css("--s1"), (v) => pct(v, 0),
+         { extra: (i) => ` (${r[i].denials.toLocaleString()} denials)` });
+  }
+
+  function renderModels() {
+    const reg = D.regression, cls = D.classification;
+    document.getElementById("regNote").textContent =
+      `Target: rate spread (APR minus the market benchmark on the lock date). Trained on ${reg.train_rows.toLocaleString()} originated 30-year fixed loans from ${D.trainYear}, tested on ${reg.test_rows.toLocaleString()} from ${D.testYear}.`;
+    const rm = reg.models.slice().sort((a, b) => b.R2 - a.R2);
+    hbar("regModels", rm.map((m) => m.model), rm.map((m) => Math.max(m.R2, 0)),
+         rm.map((m) => m.model === reg.best_model ? css("--s2") : m.model.startsWith("Baseline") ? css("--muted") : css("--s1")),
+         (v) => v.toFixed(2), { extra: (i) => ` R², RMSE ${rm[i].RMSE.toFixed(3)}` });
+    document.getElementById("lenderCallout").textContent =
+      `Lender identity alone lifts OLS from R² ${reg.ols_r2_without_lender.toFixed(2)} to ${reg.ols_r2_with_lender.toFixed(2)}: similar borrowers pay different prices depending on where they apply.`;
+    const ef = reg.effects;
+    hbar("regEffects", ef.map((e) => e.change), ef.map((e) => e.effect), ef.map((e) => e.effect > 0 ? css("--red") : css("--s1")),
+         (v) => (v > 0 ? "+" : "") + v.toFixed(2), { extra: (i) => ` pts (±${ef[i].ci.toFixed(2)})` });
+
+    const best = cls.models.find((m) => m.model === cls.best_model);
+    document.getElementById("clsNote").textContent =
+      `Target: denied vs approved. Trained on ${D.trainYear}, tested on ${cls.test_rows.toLocaleString()} applications from ${D.testYear}. ` +
+      `The best model (${cls.best_model}) flags ${pct(best.Flagged)} of applications and catches ${pct(best.Recall, 0)} of denials, with ${pct(best.Precision, 0)} of flags correct.`;
+    const o = base();
+    o.scales.x.type = "linear"; o.scales.x.min = 0; o.scales.x.max = 1;
+    o.scales.x.title = { display: true, text: "False positive rate", color: css("--muted") };
+    o.scales.y.min = 0; o.scales.y.max = 1;
+    o.scales.y.title = { display: true, text: "True positive rate", color: css("--muted") };
+    o.plugins.legend.position = "bottom";
+    o.plugins.tooltip.enabled = false;
+    o.elements = { point: { radius: 0 } };
+    const colors = ["--s1", "--s2", "--s3", "--s4"].map(css);
+    const ds = Object.entries(cls.roc).map(([name, v], i) => ({
+      label: `${name} (AUC ${cls.models.find((m) => m.model === name)["ROC AUC"].toFixed(3)})`,
+      data: v.fpr.map((x, j) => ({ x, y: v.tpr[j] })), borderColor: colors[i], backgroundColor: colors[i], borderWidth: 2, showLine: true,
+    }));
+    ds.push({ label: "Random guess", data: [{ x: 0, y: 0 }, { x: 1, y: 1 }], borderColor: css("--axis"), borderDash: [4, 4], borderWidth: 1, showLine: true, pointRadius: 0 });
+    make("rocChart", { type: "scatter", data: { datasets: ds }, options: o });
+
+    const imp = cls.importance.slice(0, 8);
+    hbar("clsImportance", imp.map((r) => r.feature), imp.map((r) => r.importance), css("--s1"), (v) => v.toFixed(3),
+         { extra: () => " drop in avg precision" });
+
+    const cols = [["model", "Model", (v) => v], ["ROC AUC", "ROC AUC", (v) => v.toFixed(3)], ["PR AUC", "Avg precision", (v) => v.toFixed(3)],
+                  ["Precision", "Precision", (v) => pct(v)], ["Recall", "Recall", (v) => pct(v)], ["F1", "F1", (v) => v.toFixed(3)],
+                  ["Flagged", "Flagged", (v) => pct(v)], ["Brier", "Brier", (v) => v.toFixed(4)]];
+    document.getElementById("clsTable").innerHTML = "<tr>" + cols.map((c) => `<th>${c[1]}</th>`).join("") + "</tr>" +
+      cls.models.map((m) => `<tr class="${m.model === cls.best_model ? "best" : ""}">` + cols.map((c) => `<td>${c[2](m[c[0]])}</td>`).join("") + "</tr>").join("");
+
+    // Fairness
+    const fr = cls.fairness.race_ethnicity;
+    const fo = base();
+    fo.scales.y.ticks.callback = (v) => pct(v, 0);
+    fo.scales.x.grid.display = false;
+    fo.plugins.legend.position = "bottom";
+    fo.plugins.tooltip.callbacks = { label: (ctx) => ` ${ctx.dataset.label}: ${pct(ctx.parsed.y)}` };
+    make("fairChart", { type: "bar", data: { labels: fr.map((r) => r.race_ethnicity), datasets: [
+      { label: "Actual denial rate", data: fr.map((r) => r.actual_denial_rate), backgroundColor: css("--s1"), borderRadius: 4 },
+      { label: "Average predicted risk", data: fr.map((r) => r.mean_predicted), backgroundColor: css("--s2"), borderRadius: 4 },
+    ] }, options: fo });
+    const gaps = reg.group_gaps;
+    hbar("gapChart", gaps.map((g) => g.race_ethnicity), gaps.map((g) => g.residual * 100),
+         gaps.map((g) => Math.abs(g.residual) > 1.96 * g.residual_se ? css("--s2") : css("--s1")),
+         (v) => (v > 0 ? "+" : "") + v.toFixed(1), { extra: (i) => ` bps (±${(196 * gaps[i].residual_se).toFixed(1)}), ${gaps[i].loans.toLocaleString()} loans` });
+    const fcols = [["race_ethnicity", "Group", (v) => v], ["applications", "Applications", (v) => Math.round(v).toLocaleString()],
+                   ["actual_denial_rate", "Actual denial rate", pct], ["flag_rate", "Flagged", pct],
+                   ["false_positive_rate", "False positive rate", pct], ["false_negative_rate", "False negative rate", pct]];
+    document.getElementById("fairTable").innerHTML = "<tr>" + fcols.map((c) => `<th>${c[1]}</th>`).join("") + "</tr>" +
+      fr.map((r) => "<tr>" + fcols.map((c) => `<td>${c[2](r[c[0]])}</td>`).join("") + "</tr>").join("");
+    document.getElementById("ftTrain").textContent = D.trainYear;
+    document.getElementById("ftTest").textContent = D.testYear;
+  }
+
+  function renderYear() { renderTiles(); renderMap(); renderHeat(); renderReasons(); }
+  function renderAll() { renderYear(); renderModels(); }
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderAll);
+  renderAll();
+})();
+</script>
+</body>
+</html>

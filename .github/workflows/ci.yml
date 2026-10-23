@@ -1,0 +1,25 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Unit tests
+        run: pytest -q
+      # Full reproduction from the public API: ingest -> clean -> EDA -> regression -> classification -> exports.
+      - name: Run the pipeline end to end
+        run: python -m mortgage.run all
+      - name: Check the reports and dashboard data were produced
+        run: |
+          for f in reports/01_eda.md reports/02_regression.md reports/03_classification.md docs/data.js \
+                   exports/tableau/applications_2024_scored.csv exports/tableau/model_metrics.csv; do
+            test -s "$f" || { echo "missing $f"; exit 1; }
+          done
+          python -c "import json; m = json.load(open('reports/metrics/classification.json')); assert len(m['models']) == 5 and m['test_rows'] > 50000"
