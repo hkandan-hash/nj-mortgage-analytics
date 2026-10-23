@@ -6,3 +6,7 @@ data/
 # Local Tableau build artifacts: the portable .twbx (workbook + extracts) is committed instead.
 tableau/*.twb
 tableau/extracts/
+# Tableau/Hyper runtime files
+hyperd*.log
+*.twbr
+
