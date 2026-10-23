@@ -1,4 +1,4 @@
-"""Exploratory data analysis: writes reports/01_eda.md and its figures.
+﻿"""Exploratory data analysis: writes reports/01_eda.md and its figures.
 
 Covers both years (all applications with a credit decision), so the EDA describes the whole
 population, not just the rows that later qualify for modeling.
@@ -170,7 +170,7 @@ def run_eda() -> None:
               "That makes it the right target for comparing pricing across borrowers and years.", ""]
 
     # ---------------------------------------------------------------- correlations
-    num_cols = ["log_loan_amount", "log_income", "ltv", "dti", "loan_to_income", "tract_minority_pct", "tract_income_pct"]
+    num_cols = ["log_loan_amount", "log_income", "ltv", "dti", "tract_minority_pct", "tract_income_pct"]
     cls, _ = classification_scope(test)
     corr = cls[num_cols + ["denied"]].corr()
     spread_corr = reg[num_cols + ["rate_spread"]].corr()["rate_spread"]

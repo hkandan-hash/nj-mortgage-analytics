@@ -26,12 +26,12 @@
 | model | MAE | RMSE | R2 | fit_seconds |
 |---|---:|---:|---:|---:|
 | Baseline (training mean) | 0.474 | 0.645 | -0.000 | 0.0 |
-| OLS | 0.374 | 0.510 | 0.376 | 2.3 |
-| OLS without lender | 0.410 | 0.571 | 0.217 | 1.9 |
-| Ridge | 0.374 | 0.510 | 0.376 | 1.8 |
-| Lasso | 0.374 | 0.510 | 0.375 | 2.0 |
-| Median (quantile) regression | 0.374 | 0.513 | 0.368 | 54.7 |
-| Gradient boosting | 0.347 | 0.472 | 0.465 | 6.7 |
+| OLS | 0.374 | 0.510 | 0.376 | 1.3 |
+| OLS without lender | 0.410 | 0.571 | 0.217 | 1.2 |
+| Ridge | 0.374 | 0.510 | 0.376 | 1.3 |
+| Lasso | 0.374 | 0.510 | 0.375 | 1.4 |
+| Median (quantile) regression | 0.374 | 0.513 | 0.368 | 36.5 |
+| Gradient boosting | 0.347 | 0.472 | 0.465 | 5.1 |
 
 - **Gradient boosting** performs best (RÂ² 0.465 on next year's loans); the linear models trail it, so pricing has non-linear patterns and interactions.
 - Lasso kept 31 of 48 features (alpha 0.0004), and Ridge and Lasso score almost the same as OLS. With this many observations, regularization adds little, which suggests OLS is not overfitting.

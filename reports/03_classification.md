@@ -25,10 +25,10 @@ Denial rate in scope: 9.2% (2024). Accuracy is not reported: predicting "approve
 | model | ROC AUC | PR AUC | Brier | Log loss | Threshold | Precision | Recall | F1 | Flagged | fit_seconds |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | Baseline (training denial rate) | 0.500 | 0.092 | 0.0836 | 0.307 | 0.09 | 9.2% | 100.0% | 0.169 | 100.0% | 0.0 |
-| Logistic regression | 0.792 | 0.439 | 0.0661 | 0.245 | 0.23 | 50.3% | 43.4% | 0.466 | 7.9% | 2.2 |
-| Decision tree | 0.799 | 0.489 | 0.0589 | 0.224 | 0.31 | 73.6% | 39.8% | 0.517 | 5.0% | 2.0 |
-| Random forest | 0.847 | 0.579 | 0.0573 | 0.214 | 0.24 | 61.9% | 48.7% | 0.545 | 7.3% | 23.1 |
-| Gradient boosting | 0.848 | 0.586 | 0.0548 | 0.206 | 0.27 | 65.4% | 47.4% | 0.549 | 6.7% | 6.2 |
+| Logistic regression | 0.792 | 0.439 | 0.0661 | 0.245 | 0.23 | 50.3% | 43.4% | 0.466 | 7.9% | 1.5 |
+| Decision tree | 0.799 | 0.489 | 0.0589 | 0.224 | 0.31 | 73.6% | 39.8% | 0.517 | 5.0% | 1.2 |
+| Random forest | 0.847 | 0.579 | 0.0573 | 0.214 | 0.24 | 61.9% | 48.7% | 0.545 | 7.3% | 14.9 |
+| Gradient boosting | 0.848 | 0.586 | 0.0548 | 0.206 | 0.27 | 65.4% | 47.4% | 0.549 | 6.7% | 4.6 |
 
 - **Gradient boosting** is best on the metric that matters for a rare outcome, average precision (0.586, vs 0.092 for a random guess). ROC AUC is 0.848.
 - At its threshold (0.27), it flags 6.7% of applications and catches 47% of denials; 65% of flagged applications are actually denied.
