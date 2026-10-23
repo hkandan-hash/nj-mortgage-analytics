@@ -1,6 +1,8 @@
 # Tableau report
 
-[`NJ_Mortgage_Lending.twbx`](NJ_Mortgage_Lending.twbx) is a ready-to-open Tableau workbook. It contains a **Story with five story points**, each a designed dashboard.
+**Live on Tableau Public:** [New Jersey Mortgage Lending](https://public.tableau.com/app/profile/harish.kandan/viz/NJ_Mortgage_Lending_Dashboard/NewJerseyMortgageLending)
+
+[`NJ_Mortgage_Lending.twbx`](NJ_Mortgage_Lending.twbx) is the same workbook, ready to open in Tableau. It contains a **Story with five story points**, each a designed dashboard.
 
 | # | Dashboard | Finding |
 |---|---|---|
@@ -12,7 +14,7 @@
 
 ![Dashboard 1](../docs/tableau/dashboard_1.png)
 
-## Publish it to Tableau Public (about 5 minutes)
+## Publish your own copy to Tableau Public (about 5 minutes)
 
 1. Install the free [Tableau Public](https://public.tableau.com/app/discover) app and sign in.
 2. Open `NJ_Mortgage_Lending.twbx`. It opens on the Story.

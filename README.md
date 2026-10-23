@@ -3,8 +3,9 @@
 An end-to-end analytics project on **186,524 real mortgage applications**: every New Jersey home-purchase application that reached a decision in 2023 and 2024, from public HMDA data. It runs ingestion → cleaning → EDA → regression → classification → fairness audit → dashboards.
 
 **Live dashboards:**
+- **Tableau Public:** [New Jersey Mortgage Lending](https://public.tableau.com/app/profile/harish.kandan/viz/NJ_Mortgage_Lending_Dashboard/NewJerseyMortgageLending), a Story with five interactive dashboards
 - **Web dashboard:** https://hkandan-hash.github.io/nj-mortgage-analytics/
-- **Tableau Story:** [`tableau/NJ_Mortgage_Lending.twbx`](tableau/NJ_Mortgage_Lending.twbx), five interactive dashboards. To publish it to Tableau Public, see the [guide](tableau/TABLEAU_GUIDE.md).
+- **Tableau workbook:** [`tableau/NJ_Mortgage_Lending.twbx`](tableau/NJ_Mortgage_Lending.twbx) ([guide](tableau/TABLEAU_GUIDE.md))
 
 ![Tableau dashboard: where applications are denied](docs/tableau/dashboard_1.png)
 
@@ -115,7 +116,6 @@ tests/             unit tests for parsing, scopes, leakage and protected-attribu
 ## Limitations
 
 - **No credit scores in HMDA.** Credit scores drive both denials and pricing, so results here are associations, not causes. The fairness gaps can't separate unequal treatment from unmeasured credit differences.
-- **Publishing needs your own account.** The Tableau workbook is built and checked in Tableau Public 2026.3, but putting it on Tableau Public has to be done from the author's account (File → Save to Tableau Public).
 - **Two years, one state.** Patterns may not hold elsewhere or in different rate environments.
 - **Short time gap.** Testing on 2024 shows the models hold up a year later, but performance would need ongoing monitoring if used in practice.
 
