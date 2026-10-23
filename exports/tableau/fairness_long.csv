@@ -1,0 +1,41 @@
+attribute,group,measure,value,applications
+race_ethnicity,White,Actual denial rate,0.06533150286683356,37149.0
+race_ethnicity,White,Average predicted risk,0.07227983316173126,37149.0
+race_ethnicity,White,False positive rate,0.019756926444329245,37149.0
+race_ethnicity,White,False negative rate,0.5447053976102183,37149.0
+race_ethnicity,Asian,Actual denial rate,0.09533950364485216,12209.0
+race_ethnicity,Asian,Average predicted risk,0.08721238569408178,12209.0
+race_ethnicity,Asian,False positive rate,0.015029425079221366,12209.0
+race_ethnicity,Asian,False negative rate,0.5781786941580755,12209.0
+race_ethnicity,Hispanic or Latino,Actual denial rate,0.12301866854526242,11356.0
+race_ethnicity,Hispanic or Latino,Average predicted risk,0.12364304842614658,11356.0
+race_ethnicity,Hispanic or Latino,False positive rate,0.03825685309770057,11356.0
+race_ethnicity,Hispanic or Latino,False negative rate,0.48103078024337864,11356.0
+race_ethnicity,Not available,Actual denial rate,0.11156866500670369,10442.0
+race_ethnicity,Not available,Average predicted risk,0.09921185482782413,10442.0
+race_ethnicity,Not available,False positive rate,0.02985879055729223,10442.0
+race_ethnicity,Not available,False negative rate,0.5321888412017167,10442.0
+race_ethnicity,Black,Actual denial rate,0.16956737941322725,6033.0
+race_ethnicity,Black,Average predicted risk,0.15582769217446044,6033.0
+race_ethnicity,Black,False positive rate,0.058283433133732535,6033.0
+race_ethnicity,Black,False negative rate,0.4731182795698925,6033.0
+race_ethnicity,Joint,Actual denial rate,0.047123287671232875,1825.0
+race_ethnicity,Joint,Average predicted risk,0.06700253249254766,1825.0
+race_ethnicity,Joint,False positive rate,0.016101207590569294,1825.0
+race_ethnicity,Joint,False negative rate,0.5930232558139534,1825.0
+sex,Joint,Actual denial rate,0.06793102388344142,32533.0
+sex,Joint,Average predicted risk,0.07474818939124324,32533.0
+sex,Joint,False positive rate,0.017610394749859842,32533.0
+sex,Joint,False negative rate,0.5592760180995475,32533.0
+sex,Male,Actual denial rate,0.10642789820923657,26525.0
+sex,Male,Average predicted risk,0.10210109432022209,26525.0
+sex,Male,False positive rate,0.03164289933338959,26525.0
+sex,Male,False negative rate,0.5214311016648955,26525.0
+sex,Female,Actual denial rate,0.10834155972359329,16208.0
+sex,Female,Average predicted risk,0.10440236071313595,16208.0
+sex,Female,False positive rate,0.029961251037918628,16208.0
+sex,Female,False negative rate,0.5045558086560364,16208.0
+sex,Not available,Actual denial rate,0.12639129359386594,4043.0
+sex,Not available,Average predicted risk,0.11171432252918376,4043.0
+sex,Not available,False positive rate,0.03312570781426954,4043.0
+sex,Not available,False negative rate,0.4833659491193738,4043.0

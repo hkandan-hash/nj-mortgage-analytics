@@ -2,16 +2,29 @@
 
 An end-to-end analytics project on **186,524 real mortgage applications**: every New Jersey home-purchase application that reached a decision in 2023 and 2024, from public HMDA data. It runs ingestion → cleaning → EDA → regression → classification → fairness audit → dashboards.
 
-**Live dashboard:** https://hkandan-hash.github.io/nj-mortgage-analytics/
+**Live dashboards:**
+- **Web dashboard:** https://hkandan-hash.github.io/nj-mortgage-analytics/
+- **Tableau Story:** [`tableau/NJ_Mortgage_Lending.twbx`](tableau/NJ_Mortgage_Lending.twbx), five interactive dashboards. To publish it to Tableau Public, see the [guide](tableau/TABLEAU_GUIDE.md).
 
-![Dashboard](docs/screenshot.png)
+![Tableau dashboard: where applications are denied](docs/tableau/dashboard_1.png)
 
 | Report | What it covers |
 |---|---|
 | [1. Exploratory data analysis](reports/01_eda.md) | Distributions, missing data, denial patterns, geography, pricing, correlations |
 | [2. Regression](reports/02_regression.md) | What drives the price a borrower pays above market: OLS, Ridge, Lasso, quantile regression, gradient boosting |
 | [3. Classification](reports/03_classification.md) | Predicting denials: logistic regression, decision tree, random forest, gradient boosting; calibration; fairness audit |
-| [Tableau report guide](tableau/TABLEAU_GUIDE.md) | Build and publish the Tableau Story from the exported data |
+| [Tableau Story](tableau/TABLEAU_GUIDE.md) | Five dashboards: where, why, pricing, prediction, fairness |
+
+<details>
+<summary><b>All five Tableau dashboards</b></summary>
+
+| | |
+|---|---|
+| ![Where](docs/tableau/dashboard_1.png) | ![Why](docs/tableau/dashboard_2.png) |
+| ![Pricing](docs/tableau/dashboard_3.png) | ![Prediction](docs/tableau/dashboard_4.png) |
+| ![Fairness](docs/tableau/dashboard_5.png) | ![Web dashboard](docs/screenshot.png) |
+
+</details>
 
 ## Key findings
 
@@ -33,7 +46,7 @@ flowchart LR
     F --> K[classification.py<br/>5 models + fairness]
     R --> X[export.py]
     K --> X
-    X --> T[Tableau CSV extracts]
+    X --> T[Tableau Story<br/>generated .twbx + Hyper extracts]
     X --> W[Live web dashboard<br/>GitHub Pages]
 ```
 
@@ -94,7 +107,7 @@ CI reruns the whole pipeline from the public API on every push, so every number 
 mortgage/          ingest, clean, features (scopes, leakage rules), eda, regression, classification, export, charts
 reports/           01_eda.md, 02_regression.md, 03_classification.md, figures/, metrics/*.json  (generated)
 exports/tableau/   CSV extracts for Tableau (generated)
-tableau/           Tableau Story build + publish guide
+tableau/           NJ_Mortgage_Lending.twbx (Tableau Story), build_workbook.py (generator), publish guide
 docs/              live dashboard (GitHub Pages): index.html + data.js (generated)
 tests/             unit tests for parsing, scopes, leakage and protected-attribute rules, metrics
 ```
@@ -102,10 +115,10 @@ tests/             unit tests for parsing, scopes, leakage and protected-attribu
 ## Limitations
 
 - **No credit scores in HMDA.** Credit scores drive both denials and pricing, so results here are associations, not causes. The fairness gaps can't separate unequal treatment from unmeasured credit differences.
-- **Tableau Story not yet published.** It has to be published from a Tableau Public account, so it isn't live yet; follow the [guide](tableau/TABLEAU_GUIDE.md). The live dashboard above is a web version with the same content.
+- **Publishing needs your own account.** The Tableau workbook is built and checked in Tableau Public 2026.3, but putting it on Tableau Public has to be done from the author's account (File → Save to Tableau Public).
 - **Two years, one state.** Patterns may not hold elsewhere or in different rate environments.
 - **Short time gap.** Testing on 2024 shows the models hold up a year later, but performance would need ongoing monitoring if used in practice.
 
 **Data:** Home Mortgage Disclosure Act data, FFIEC / CFPB ([Data Browser](https://ffiec.cfpb.gov/data-browser/)), which is public. County boundaries come from US Census–derived GeoJSON ([plotly/datasets](https://github.com/plotly/datasets)).
 
-**Built with:** `Python` · `pandas` · `scikit-learn` · `statsmodels` · `matplotlib` · `Chart.js` · `Tableau` · `pytest` · `GitHub Actions` · `GitHub Pages`
+**Built with:** `Python` · `pandas` · `scikit-learn` · `statsmodels` · `matplotlib` · `Tableau` · `Tableau Hyper API` · `Chart.js` · `pytest` · `GitHub Actions` · `GitHub Pages`

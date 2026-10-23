@@ -3,3 +3,6 @@ __pycache__/
 .pytest_cache/
 data/
 *.part
+# Local Tableau build artifacts: the portable .twbx (workbook + extracts) is committed instead.
+tableau/*.twb
+tableau/extracts/

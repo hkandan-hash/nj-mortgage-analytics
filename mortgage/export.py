@@ -67,6 +67,8 @@ def run_export() -> None:
     grid = both.assign(dti_band=dti_band(both.dti).astype(str), ltv_band=ltv_band(both.ltv).astype(str)) \
         .query("dti_band != 'nan' and ltv_band != 'nan'") \
         .groupby(["year", "dti_band", "ltv_band"]).denied.agg(applications="size", denial_rate="mean").reset_index()
+    by_dti = both.assign(dti_band=dti_band(both.dti).astype(str)).query("dti_band != 'nan'") \
+        .groupby(["year", "dti_band"]).denied.agg(applications="size", denial_rate="mean").reset_index()
     reasons = both[both.denied == 1].assign(denial_reason=lambda d: d.denial_reason.fillna("Not reported")) \
         .groupby(["year", "denial_reason"]).size().rename("denials").reset_index()
     reasons["share"] = reasons.denials / reasons.groupby("year").denials.transform("sum")
@@ -90,6 +92,7 @@ def run_export() -> None:
         f"applications_{config.TEST_YEAR}_scored.csv": scored[keep],
         "county_summary.csv": county,
         "denial_by_dti_ltv.csv": grid,
+        "denial_by_dti.csv": by_dti,
         "denial_reasons.csv": reasons,
         "denial_by_loan_type.csv": by_type,
         "model_metrics.csv": pd.DataFrame(model_rows),
